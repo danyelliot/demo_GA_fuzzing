@@ -1,4 +1,4 @@
-# Demo 1 — Algoritmo Genetico del paper Python
+# Demo 1 - Algoritmo Genetico del paper Python
 
 Reimplementacion en Python del Algoritmo Genetico descrito en la Seccion 3 del paper, aplicada a un SUT (*System Under Test*) propio y pequeño para que cada paso se pueda verificar a mano.
 
@@ -90,9 +90,9 @@ Crossover de un punto -> Hijo 2:
 
 Ningun padre por si solo cubria las 4 ramas. El crossover combino el gen `activo` del Padre 2 con el gen `rol` del Padre 1, generando un individuo que alcanza cobertura total en la Generacion 4. Esto ilustra exactamente lo que el paper argumenta en la Seccion 4.2 sobre por que el crossover es indispensable: sin el, un algoritmo que solo muta (como el benchmark EvoGFuzz que compara el paper) queda limitado a variaciones locales de un mismo individuo y no puede combinar genes de dos individuos distintos.
 
-## Una limitacion real observada (semilla por defecto, sin `--seed`)
+## limitación (seed por default, sin `--seed`)
 
-En corridas donde la poblacion inicial pierde tempranamente el gen `activo`, el algoritmo puede converger en 75% de cobertura sin alcanzar el 100%, porque el operador de mutacion usado (reorder) reordena genes existentes pero no introduce genes nuevos que ya se hayan perdido de toda la poblacion. Esto no es un error de la implementacion: es consistente con el diseno del. paper, que separa explicitamente los roles de cada operador (Sec. 4.2): el crossover es responsable de la exploracion de combinaciones nuevas, mientras que la mutacion aporta ajustes finos (*exploitation*) sobre el material genetico ya presente en la poblacion.
+En ejeciuciones donde la poblacion inicial pierde tempranamente el gen `activo`, el algoritmo puede converger en 75% de cobertura sin alcanzar el 100%, porque el operador de mutacion usado (reorder) reordena genes existentes pero no introduce genes nuevos que ya se hayan perdido de toda la poblacion. Esto no es un error de la implementacion: es consistente con el diseno del. paper, que separa explicitamente los roles de cada operador (Sec. 4.2): el crossover es responsable de la exploracion de combinaciones nuevas, mientras que la mutacion aporta ajustes finos (*exploitation*) sobre el material genetico ya presente en la poblacion.
 
-Para ver esta limitacion, corre `python3 main.py` varias veces sin `--seed` y observa que algunas corridas terminan en 75% al llegar al maximo de generaciones en vez de en 100%.
+Para ver esta limitacion, ejecutamos `python3 main.py` varias veces sin `--seed` y observa que algunas corridas terminan en 75% al llegar al maximo de generaciones en vez de en 100%.
 
