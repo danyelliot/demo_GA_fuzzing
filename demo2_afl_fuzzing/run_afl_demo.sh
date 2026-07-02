@@ -6,13 +6,18 @@
 #
 # Requiere: AFL++ compilado (ver README.md de esta carpeta) y clang.
 #
-# Para ejecutarlo : 
-#   ./run_afl_demo.sh /ruta/a/AFLplusplus
+# Para ejecutarlo :
+#   ./run_afl_demo.sh /ruta/a/AFLplusplus [duracion_en_segundos]
 #
+# duracion_en_segundos es opcional (default 90). Se usa un valor mayor
+# en CI (ver .github/workflows/afl_demo.yml) porque un runner puede ser
+# mas lento que una maquina local y necesitar mas tiempo para llegar al
+# mismo numero de ejecuciones.
 
 set -e
 
 AFLPP_DIR="${1:-./AFLplusplus}"
+DURACION="${2:-90}"
 
 if [ ! -x "$AFLPP_DIR/afl-fuzz" ]; then
     echo "No se encontro afl-fuzz compilado en $AFLPP_DIR"
@@ -35,8 +40,8 @@ mkdir -p seeds findings
 echo "hello"  > seeds/seed1
 echo "EVOLVE" > seeds/seed2
 
-echo "== Corriendo afl-fuzz (90 segundos, semilla fija -s 32) =="
-timeout 90 "$AFLPP_DIR/afl-fuzz" -i seeds -o findings -s 32 \
+echo "== Corriendo afl-fuzz ($DURACION segundos, semilla fija -s 32) =="
+timeout "$DURACION" "$AFLPP_DIR/afl-fuzz" -i seeds -o findings -s 32 \
     -- ./target_vulnerable @@ || true
 
 echo ""

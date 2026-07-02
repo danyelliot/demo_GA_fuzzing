@@ -2,3 +2,9 @@ __pycache__/
 *.pyc
 .DS_Store
 .claude/
+
+# artefactos generados al correr demo2_afl_fuzzing/run_afl_demo.sh
+AFLplusplus/
+demo2_afl_fuzzing/seeds/
+demo2_afl_fuzzing/findings/
+demo2_afl_fuzzing/target_vulnerable

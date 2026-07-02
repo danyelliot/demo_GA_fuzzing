@@ -1,0 +1,94 @@
+name: Demo 2 - AFL++ fuzzing
+
+on:
+  workflow_dispatch:
+    inputs:
+      duration_seconds:
+        required: false
+        default: "180"
+
+jobs:
+  fuzz:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demo2_afl_fuzzing
+    steps:
+      - name: Checkout del repo
+        uses: actions/checkout@v4
+
+      - name: Instalar dependencias de compilacion
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            build-essential clang llvm python3-dev automake bison \
+            libglib2.0-dev libpixman-1-dev libtool-bin
+
+      - name: Ajustar core_pattern (afl-fuzz lo exige)
+        run: echo core | sudo tee /proc/sys/kernel/core_pattern
+
+      - name: Cachear AFL++ ya compilado
+        id: cache-aflpp
+        uses: actions/cache@v4
+        with:
+          path: AFLplusplus
+          key: ${{ runner.os }}-aflpp-stable-v1
+
+      - name: Clonar y compilar AFL++ (rama stable)
+        if: steps.cache-aflpp.outputs.cache-hit != 'true'
+        working-directory: .
+        run: |
+          git clone --depth 1 --branch stable https://github.com/AFLplusplus/AFLplusplus.git
+          cd AFLplusplus
+          make source-only
+
+      - name: Correr la demo (compila target + afl-fuzz)
+        run: |
+          chmod +x run_afl_demo.sh
+          ./run_afl_demo.sh ../AFLplusplus "${{ inputs.duration_seconds }}"
+
+      - name: Verificar que se encontro un crash
+        run: |
+          if ! ls findings/default/crashes/id:* >/dev/null 2>&1; then
+            echo "No se encontro ningun crash en ${{ inputs.duration_seconds }}s."
+            echo "Reintenta con un duration_seconds mayor."
+            exit 1
+          fi
+          echo "Crash(es) encontrado(s):"
+          ls findings/default/crashes/
+
+      - name: Publicar resumen en el job
+        if: always()
+        run: |
+          {
+            echo "### Resultado de la corrida de AFL++"
+            echo ""
+            if ls findings/default/crashes/id:* >/dev/null 2>&1; then
+              CRASH=$(ls findings/default/crashes/id:* | head -1)
+              echo "**Crash encontrado:** \`$CRASH\`"
+              echo ""
+              echo "Reporte de AddressSanitizer:"
+              echo '```'
+              ./target_vulnerable "$CRASH" 2>&1 | head -25 || true
+              echo '```'
+            else
+              echo "**No se encontro crash en esta corrida.**"
+            fi
+            if [ -f findings/default/fuzzer_stats ]; then
+              echo ""
+              echo "**Metricas (fuzzer_stats):**"
+              echo '```'
+              cat findings/default/fuzzer_stats
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Subir evidencia como artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: afl-demo-evidencia
+          path: |
+            demo2_afl_fuzzing/findings/default/crashes/
+            demo2_afl_fuzzing/findings/default/fuzzer_stats
+          if-no-files-found: warn
