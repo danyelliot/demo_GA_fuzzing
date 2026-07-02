@@ -1,0 +1,89 @@
+name: Demo 1 - Python GA
+
+on:
+  push:
+    paths:
+      - "demo1_python_ga/**"
+      - "notebook_colab.ipynb"
+      - ".github/workflows/python_demo.yml"
+  pull_request:
+    paths:
+      - "demo1_python_ga/**"
+      - "notebook_colab.ipynb"
+      - ".github/workflows/python_demo.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demo1_python_ga
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - name: Checkout del repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Correr las 12 pruebas unitarias
+        run: python -m unittest test_ga.py -v
+
+      - name: Verificar reproducibilidad (--seed 32 == ejemplo_ejecucion.txt)
+        run: python main.py --seed 32 | diff - ejemplo_ejecucion.txt
+
+  notebook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar nbconvert y el kernel de ejecucion
+        run: |
+          pip install nbconvert ipykernel
+          python -m ipykernel install --user --name python3
+
+      - name: Ejecutar notebook_colab.ipynb de punta a punta
+        run: |
+          jupyter nbconvert --to notebook --execute \
+            --ExecutePreprocessor.timeout=120 \
+            --output-dir /tmp --output notebook_ejecutado.ipynb \
+            notebook_colab.ipynb
+
+      - name: Verificar que la celda seed=32 coincide con ejemplo_ejecucion.txt
+        run: |
+          python3 - <<'PY'
+          import json
+
+          def texto(o):
+              t = o.get("text", "")
+              return "".join(t) if isinstance(t, list) else t
+
+          nb = json.load(open("/tmp/notebook_ejecutado.ipynb"))
+          celda = next(
+              c for c in nb["cells"]
+              if c["cell_type"] == "code"
+              and "correr_ciclo_evolutivo(seed=32)" in "".join(c["source"])
+          )
+          salida = "".join(
+              texto(o) for o in celda["outputs"]
+              if o.get("output_type") == "stream"
+          )
+          esperado = open("demo1_python_ga/ejemplo_ejecucion.txt").read()
+
+          assert salida.strip() == esperado.strip(), (
+              "La salida del notebook para seed=32 no coincide con "
+              "ejemplo_ejecucion.txt"
+          )
+          print("OK: notebook_colab.ipynb (seed=32) coincide con ejemplo_ejecucion.txt")
+          PY
