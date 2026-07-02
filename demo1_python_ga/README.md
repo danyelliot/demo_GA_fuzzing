@@ -1,4 +1,4 @@
-# Demo 1 — Algoritmo Genetico del paper, implementado literalmente en Python
+# Demo 1 — Algoritmo Genetico del paper Python
 
 Reimplementacion en Python puro (sin dependencias externas) del Algoritmo
 Genetico descrito en la Seccion 3 del paper, aplicada a un SUT (*System Under
