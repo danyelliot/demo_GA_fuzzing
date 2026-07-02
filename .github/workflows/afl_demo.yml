@@ -83,12 +83,22 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Preparar evidencia (AFL usa ':' y ',' en los nombres, invalidos para upload-artifact)
+        if: always()
+        run: |
+          mkdir -p evidencia
+          for f in findings/default/crashes/id:*; do
+            [ -e "$f" ] || continue
+            nombre_seguro=$(basename "$f" | tr ':,' '__')
+            cp "$f" "evidencia/$nombre_seguro"
+            ./target_vulnerable "$f" > "evidencia/asan_report_${nombre_seguro}.txt" 2>&1 || true
+          done
+          cp findings/default/fuzzer_stats evidencia/ 2>/dev/null || true
+
       - name: Subir evidencia como artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: afl-demo-evidencia
-          path: |
-            demo2_afl_fuzzing/findings/default/crashes/
-            demo2_afl_fuzzing/findings/default/fuzzer_stats
+          path: demo2_afl_fuzzing/evidencia/
           if-no-files-found: warn
