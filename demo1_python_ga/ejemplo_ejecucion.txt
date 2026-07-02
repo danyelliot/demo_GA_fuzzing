@@ -1,0 +1,136 @@
+[semilla fijada en 32 para reproducibilidad]
+
+========================================================================
+PASO 1 - Poblacion inicial (Seccion 3.1 del paper, cold-start)
+========================================================================
+  Individuo 1: {'edad': 19}
+      fitness = 25.0%  |  ramas cubiertas = B2
+  Individuo 2: {'edad': 93, 'rol': 'admin', 'nombre': 'Alice'}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B4
+  Individuo 3: {'activo': False, 'nombre': 'Alice', 'edad': 70}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B3
+  Individuo 4: {'nombre': 'Bob', 'edad': 37}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Individuo 5: {'rol': 'user', 'nombre': 'Alice'}
+      fitness = 50.0%  |  ramas cubiertas = B1, B4
+  Individuo 6: {'nombre': 'Bob'}
+      fitness = 25.0%  |  ramas cubiertas = B1
+
+========================================================================
+GENERACION 1
+========================================================================
+Mejor fitness de la generacion actual: 75.0%
+
+PASO 2 - Seleccion por torneo (Seccion 3.4)
+  Padre 1: {'nombre': 'Bob', 'edad': 37}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Padre 2: {'activo': False, 'nombre': 'Alice', 'edad': 70}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B3
+
+PASO 3 - Crossover de un punto (Seccion 3.2.1, Figura 2)
+  Hijo 1 (antes de mutar): {'nombre': 'Alice', 'edad': 70}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Hijo 2 (antes de mutar): {'activo': False, 'edad': 37}
+      fitness = 50.0%  |  ramas cubiertas = B2, B3
+
+PASO 4 - Mutacion por reordenamiento (Seccion 3.2.2, Figura 3)
+  Hijo 1 (mutado): {'nombre': 'Alice', 'edad': 70}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Hijo 2 (mutado): {'activo': False, 'edad': 37}
+      fitness = 50.0%  |  ramas cubiertas = B2, B3
+
+PASO 5 - Nueva generacion (reemplazo con elitismo simple)
+  Individuo 1: {'edad': 93, 'rol': 'admin', 'nombre': 'Alice'}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B4
+  Individuo 2: {'activo': False, 'nombre': 'Alice', 'edad': 70}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B3
+  Individuo 3: {'nombre': 'Bob', 'edad': 37}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Individuo 4: {'rol': 'user', 'nombre': 'Alice'}
+      fitness = 50.0%  |  ramas cubiertas = B1, B4
+  Individuo 5: {'nombre': 'Alice', 'edad': 70}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Individuo 6: {'activo': False, 'edad': 37}
+      fitness = 50.0%  |  ramas cubiertas = B2, B3
+
+========================================================================
+GENERACION 2
+========================================================================
+Mejor fitness de la generacion actual: 75.0%
+
+PASO 2 - Seleccion por torneo (Seccion 3.4)
+  Padre 1: {'activo': False, 'nombre': 'Alice', 'edad': 70}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B3
+  Padre 2: {'edad': 93, 'rol': 'admin', 'nombre': 'Alice'}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B4
+
+PASO 3 - Crossover de un punto (Seccion 3.2.1, Figura 2)
+  Hijo 1 (antes de mutar): {'activo': False}
+      fitness = 25.0%  |  ramas cubiertas = B3
+  Hijo 2 (antes de mutar): {'edad': 70, 'rol': 'admin', 'nombre': 'Alice'}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B4
+
+PASO 4 - Mutacion por reordenamiento (Seccion 3.2.2, Figura 3)
+  Hijo 1 (mutado): {'activo': False}
+      fitness = 25.0%  |  ramas cubiertas = B3
+  Hijo 2 (mutado): {'nombre': 'Alice', 'edad': 70, 'rol': 'admin'}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B4
+
+PASO 5 - Nueva generacion (reemplazo con elitismo simple)
+  Individuo 1: {'edad': 93, 'rol': 'admin', 'nombre': 'Alice'}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B4
+  Individuo 2: {'activo': False, 'nombre': 'Alice', 'edad': 70}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B3
+  Individuo 3: {'nombre': 'Bob', 'edad': 37}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Individuo 4: {'rol': 'user', 'nombre': 'Alice'}
+      fitness = 50.0%  |  ramas cubiertas = B1, B4
+  Individuo 5: {'activo': False}
+      fitness = 25.0%  |  ramas cubiertas = B3
+  Individuo 6: {'nombre': 'Alice', 'edad': 70, 'rol': 'admin'}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B4
+
+========================================================================
+GENERACION 3
+========================================================================
+Mejor fitness de la generacion actual: 75.0%
+
+PASO 2 - Seleccion por torneo (Seccion 3.4)
+  Padre 1: {'nombre': 'Alice', 'edad': 70, 'rol': 'admin'}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B4
+  Padre 2: {'activo': False, 'nombre': 'Alice', 'edad': 70}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B3
+
+PASO 3 - Crossover de un punto (Seccion 3.2.1, Figura 2)
+  Hijo 1 (antes de mutar): {'nombre': 'Alice', 'edad': 70}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Hijo 2 (antes de mutar): {'activo': False, 'nombre': 'Alice', 'edad': 70, 'rol': 'admin'}
+      fitness = 100.0%  |  ramas cubiertas = B1, B2, B3, B4
+
+PASO 4 - Mutacion por reordenamiento (Seccion 3.2.2, Figura 3)
+  Hijo 1 (mutado): {'edad': 70, 'nombre': 'Alice'}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Hijo 2 (mutado): {'nombre': 'Alice', 'edad': 70, 'activo': False, 'rol': 'admin'}
+      fitness = 100.0%  |  ramas cubiertas = B1, B2, B3, B4
+
+PASO 5 - Nueva generacion (reemplazo con elitismo simple)
+  Individuo 1: {'edad': 93, 'rol': 'admin', 'nombre': 'Alice'}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B4
+  Individuo 2: {'activo': False, 'nombre': 'Alice', 'edad': 70}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B3
+  Individuo 3: {'nombre': 'Alice', 'edad': 70, 'rol': 'admin'}
+      fitness = 75.0%  |  ramas cubiertas = B1, B2, B4
+  Individuo 4: {'nombre': 'Bob', 'edad': 37}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Individuo 5: {'edad': 70, 'nombre': 'Alice'}
+      fitness = 50.0%  |  ramas cubiertas = B1, B2
+  Individuo 6: {'nombre': 'Alice', 'edad': 70, 'activo': False, 'rol': 'admin'}
+      fitness = 100.0%  |  ramas cubiertas = B1, B2, B3, B4
+
+========================================================================
+GENERACION 4
+========================================================================
+Mejor fitness de la generacion actual: 100.0%
+
+Criterio de parada alcanzado: 100% de branch coverage.
+Individuo que logro cobertura total: {'nombre': 'Alice', 'edad': 70, 'activo': False, 'rol': 'admin'}

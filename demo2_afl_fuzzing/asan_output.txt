@@ -1,0 +1,50 @@
+=================================================================
+==19332==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7f5f4ee00060 at pc 0x55a86725ae64 bp 0x7ffeca472190 sp 0x7ffeca471948
+WRITE of size 66 at 0x7f5f4ee00060 thread T0
+    #0 0x55a86725ae63 in strcpy (/home/claude/afl_demo/target_vulnerable+0xaee63) (BuildId: cc74b0bf9b4c53c6c2d8dd3571368549df4865a3)
+    #1 0x55a8672b1949 in copiar_inseguro /home/claude/afl_demo/target_vulnerable.c:43:5
+    #2 0x55a8672b1dbd in main /home/claude/afl_demo/target_vulnerable.c:77:9
+    #3 0x7f5f50e2a1c9  (/lib/x86_64-linux-gnu/libc.so.6+0x2a1c9) (BuildId: 8e9fd827446c24067541ac5390e6f527fb5947bb)
+    #4 0x7f5f50e2a28a in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2a28a) (BuildId: 8e9fd827446c24067541ac5390e6f527fb5947bb)
+    #5 0x55a8671d8434 in _start (/home/claude/afl_demo/target_vulnerable+0x2c434) (BuildId: cc74b0bf9b4c53c6c2d8dd3571368549df4865a3)
+
+Address 0x7f5f4ee00060 is located in stack of thread T0 at offset 96 in frame
+    #0 0x55a8672b182f in copiar_inseguro /home/claude/afl_demo/target_vulnerable.c:40
+
+  This frame has 1 object(s):
+    [32, 96) 'buffer_pequenio' (line 41) <== Memory access at offset 96 overflows this variable
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow (/home/claude/afl_demo/target_vulnerable+0xaee63) (BuildId: cc74b0bf9b4c53c6c2d8dd3571368549df4865a3) in strcpy
+Shadow bytes around the buggy address:
+  0x7f5f4edffd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7f5f4edffe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7f5f4edffe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7f5f4edfff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7f5f4edfff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x7f5f4ee00000: f1 f1 f1 f1 00 00 00 00 00 00 00 00[f3]f3 f3 f3
+  0x7f5f4ee00080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7f5f4ee00100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7f5f4ee00180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7f5f4ee00200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x7f5f4ee00280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==19332==ABORTING
